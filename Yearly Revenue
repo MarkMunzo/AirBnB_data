@@ -1,0 +1,13 @@
+/* give us the id, url, name, and # of booked nights, per year, on AirBnB in Denver, id was in e notation for high values, so id_int will make sure it proivdes the full number, as an integer*/
+SELECT CAST( id AS INT) AS id_int, listing_url, name,365 - availability_365 AS num_booked_year,
+  /* price as an INT instead of string */
+  CAST(price AS INT64) AS price_clean,
+  /* by multiplying # of nights booked by price we can get the top earners per year */
+  CAST(price AS INT64) * (365 - availability_365) AS projected_rev_year 
+FROM
+  `mark-data-analytics.AirBnB_data.listings`
+ORDER BY
+  projected_rev_year DESC
+/* order by top earners, want top 20 results */
+LIMIT
+  20 ; 
