@@ -1,0 +1,25 @@
+/* we want the number of dirty reviwews, hosts name, website link, and host_id */
+SELECT
+  listings.host_id,
+  listings.host_url,
+  listings.host_name,
+  COUNT(DISTINCT comments) AS num_dirty_reviews
+  /* code won't work unless it's aliased because bigquery requires full project.database.table format*/ 
+FROM
+  `mark-data-analytics.AirBnB_data.reviews` AS reviews,
+  `mark-data-analytics.AirBnB_data.listings` AS listings
+  /* join information where the listing_id from reviews table is equal to the id from listings table */ 
+INNER JOIN
+  `mark-data-analytics.AirBnB_data.listings`
+ON
+  reviews.listing_id = listings.id
+  /* looking for reviews (comments) that mention dirty, as these would be a great target for our cleaning service*/ 
+WHERE
+  comments LIKE "%dirty%"
+GROUP BY
+  host_id,
+  host_url,
+  host_name
+  /* ordering by the number of reviews descending gives us our dirtiest host first */ 
+ORDER BY
+  num_dirty_reviews DESC;
